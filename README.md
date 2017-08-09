@@ -1,4 +1,4 @@
-# OPQ
+# OPQ: One Pooled Queue
 
 [![Travis](https://img.shields.io/travis/fredwu/opq.svg)](https://travis-ci.org/fredwu/opq)
 [![Code Climate](https://img.shields.io/codeclimate/github/fredwu/opq.svg)](https://codeclimate.com/github/fredwu/opq)
