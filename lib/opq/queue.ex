@@ -9,9 +9,13 @@ defmodule OPQ.Queue do
       iex> Queue.init
       iex> Agent.get(:opq_queue, & &1)
       {[], []}
+
+      iex> Queue.init(:hello_queue)
+      iex> Agent.get(:hello_queue, & &1)
+      {[], []}
   """
-  def init do
-    Agent.start_link(fn -> :queue.new end, name: :opq_queue)
+  def init(name \\ :opq_queue) do
+    Agent.start_link(fn -> :queue.new end, name: name)
   end
 
   @doc """
