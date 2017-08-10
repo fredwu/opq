@@ -7,6 +7,8 @@
 
 A simple, in-memory queue with pooling in Elixir.
 
+Originally built to support [Crawler](https://github.com/fredwu/crawler).
+
 ## Features Backlog
 
 - [x] A simple FIFO queue.
