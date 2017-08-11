@@ -12,8 +12,9 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 ## Features Backlog
 
 - [x] A simple FIFO queue.
-- [ ] Worker pool via `poolboy`.
-- [ ] Demand control via `gen_stage`.
+- [x] Worker pool via demand control.
+- [ ] Wait timeout on the queue so the program exits itself accordingly.
+- [ ] Rate limit.
 
 ## License
 

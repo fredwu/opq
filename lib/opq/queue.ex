@@ -18,6 +18,32 @@ defmodule OPQ.Queue do
   ## Examples
 
       iex> Queue.init
+      iex> Queue.get_queue
+      {[], []}
+  """
+  def get_queue do
+    Agent.get(:opq_queue, & &1)
+  end
+
+  @doc """
+  ## Examples
+
+      iex> Queue.init
+      iex> Queue.enqueue("hello")
+      iex> new_queue = :queue.new
+      iex> new_queue = :queue.in("world", new_queue)
+      iex> Queue.update_queue(new_queue)
+      iex> Queue.get_queue
+      {["world"], []}
+  """
+  def update_queue(new_queue) do
+    Agent.update(:opq_queue, fn(_) -> new_queue end)
+  end
+
+  @doc """
+  ## Examples
+
+      iex> Queue.init
       iex> Queue.enqueue("hello")
       {["hello"], []}
 
@@ -67,6 +93,69 @@ defmodule OPQ.Queue do
   ## Examples
 
       iex> Queue.init
+      iex> Queue.split(1)
+      {{[], []}, {[], []}}
+
+      iex> Queue.init
+      iex> Queue.enqueue("hello")
+      iex> Queue.enqueue("world")
+      iex> Queue.enqueue("yes")
+      iex> Queue.split(2)
+      {{["world"], ["hello"]}, {["yes"], []}}
+
+      iex> Queue.init
+      iex> Queue.enqueue("hello")
+      iex> Queue.enqueue("world")
+      iex> Queue.enqueue("yes")
+      iex> Queue.split(4)
+      {{["yes", "world"], ["hello"]}, {[], []}}
+  """
+  def split(n) do
+    try do
+      :queue.split(n, get_queue())
+    rescue
+      ArgumentError -> :queue.split(length(), get_queue())
+    end
+  end
+
+  @doc """
+  ## Examples
+
+      iex> Queue.init
+      iex> Queue.to_list
+      []
+
+      iex> Queue.init
+      iex> Queue.enqueue("hello")
+      iex> Queue.enqueue("world")
+      iex> Queue.to_list
+      ["hello", "world"]
+  """
+  def to_list do
+    :queue.to_list(get_queue())
+  end
+
+  @doc """
+  ## Examples
+
+      iex> Queue.init
+      iex> Queue.length
+      0
+
+      iex> Queue.init
+      iex> Queue.enqueue("hello")
+      iex> Queue.enqueue("world")
+      iex> Queue.length
+      2
+  """
+  def length do
+    :queue.len(get_queue())
+  end
+
+  @doc """
+  ## Examples
+
+      iex> Queue.init
       iex> Queue.is_empty?
       true
 
@@ -77,13 +166,5 @@ defmodule OPQ.Queue do
   """
   def is_empty? do
     :queue.is_empty(get_queue())
-  end
-
-  defp get_queue do
-    Agent.get(:opq_queue, & &1)
-  end
-
-  defp update_queue(new_queue) do
-    Agent.update(:opq_queue, fn(_) -> new_queue end)
   end
 end

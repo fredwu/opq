@@ -26,7 +26,6 @@ defmodule OPQ.Mixfile do
   defp deps do
     [
       {:gen_stage,   "~> 0.12"},
-      {:poolboy,     "~> 1.5"},
       {:ex_doc,      ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.7",   only: :test},
     ]
