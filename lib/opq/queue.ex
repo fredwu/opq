@@ -3,15 +3,17 @@ defmodule OPQ.Queue do
   A simple proxy to Erlang's queue module.
   """
 
+  alias OPQ.Queue.DB
+
   @doc """
   ## Examples
 
       iex> Queue.init
-      iex> Agent.get(:opq_queue, & &1)
+      iex> Agent.get(OPQ.Queue.DB, & &1)
       {[], []}
   """
   def init do
-    Agent.start_link(fn -> :queue.new end, name: :opq_queue)
+    Agent.start_link(fn -> :queue.new end, name: DB)
   end
 
   @doc """
@@ -22,7 +24,7 @@ defmodule OPQ.Queue do
       {[], []}
   """
   def get_queue do
-    Agent.get(:opq_queue, & &1)
+    Agent.get(DB, & &1)
   end
 
   @doc """
@@ -37,7 +39,7 @@ defmodule OPQ.Queue do
       {["world"], []}
   """
   def update_queue(new_queue) do
-    Agent.update(:opq_queue, fn(_) -> new_queue end)
+    Agent.update(DB, fn(_) -> new_queue end)
   end
 
   @doc """
