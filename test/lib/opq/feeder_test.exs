@@ -1,5 +1,5 @@
 defmodule OPQ.FeederTest do
-  use ExUnit.Case, async: true
+  use OPQ.TestCase, async: true
 
   alias OPQ.Feeder
 

@@ -1,5 +1,5 @@
 defmodule OPQTest do
-  use ExUnit.Case
+  use OPQ.TestCase
 
   alias OPQ.Queue
 
@@ -12,9 +12,9 @@ defmodule OPQTest do
 
     OPQ.start
 
-    Process.sleep(10)
-
-    assert Queue.length == 0
+    wait fn ->
+      assert Queue.length == 0
+    end
   end
 
   test "enqueue functions" do
@@ -26,9 +26,9 @@ defmodule OPQTest do
 
     OPQ.start
 
-    Process.sleep(10)
-
-    assert Queue.length == 0
-    assert Kernel.length(Agent.get(Bucket, & &1)) == 2
+    wait fn ->
+      assert Queue.length == 0
+      assert Kernel.length(Agent.get(Bucket, & &1)) == 2
+    end
   end
 end

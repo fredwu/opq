@@ -1,5 +1,5 @@
 defmodule OPQ.WorkerTest do
-  use ExUnit.Case, async: true
+  use OPQ.TestCase, async: true
 
   alias OPQ.Worker
 
