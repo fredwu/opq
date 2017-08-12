@@ -9,6 +9,18 @@ A simple, in-memory queue with pooling in Elixir.
 
 Originally built to support [Crawler](https://github.com/fredwu/crawler).
 
+## Usage
+
+```elixir
+OPQ.start(workers: 10)
+```
+
+## Configurations
+
+| Option       | Type    | Default Value | Description |
+|--------------|---------|---------------|-------------|
+| `:workers`   | integer | 10            | Maximum number of workers.
+
 ## Features Backlog
 
 - [x] A simple FIFO queue.

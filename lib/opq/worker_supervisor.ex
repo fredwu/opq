@@ -7,11 +7,11 @@ defmodule OPQ.WorkerSupervisor do
 
   alias OPQ.{Feeder, Worker}
 
-  def start_link do
-    ConsumerSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(opts) do
+    ConsumerSupervisor.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def init(:ok) do
+  def init(opts) do
     children = [
       worker(Worker, [], restart: :temporary)
     ]
@@ -20,7 +20,7 @@ defmodule OPQ.WorkerSupervisor do
       :ok,
       children,
       strategy: :one_for_one,
-      subscribe_to: [{Feeder, max_demand: 10}]
+      subscribe_to: [{Feeder, max_demand: opts[:workers]}]
     }
   end
 end
