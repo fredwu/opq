@@ -10,10 +10,10 @@ defmodule OPQ do
 
     opts = Options.assign_defaults(opts)
 
-    Queue.init
+    Queue.init(opts[:name])
 
     children = [
-      worker(Feeder, []),
+      worker(Feeder, [opts]),
       worker(WorkerSupervisor, [opts])
     ]
 

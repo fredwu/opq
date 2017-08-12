@@ -3,6 +3,9 @@ defmodule OPQ.Options do
   Options for configuring OPQ.
   """
 
+  alias OPQ.Queue.DB
+
+  @name    DB
   @workers 10
 
   @doc """
@@ -16,9 +19,11 @@ defmodule OPQ.Options do
   """
   def assign_defaults(opts) do
     Keyword.merge([
+      name:    name(),
       workers: workers(),
     ], opts)
   end
 
+  defp name,    do: Application.get_env(:opq, :name)    || @name
   defp workers, do: Application.get_env(:opq, :workers) || @workers
 end

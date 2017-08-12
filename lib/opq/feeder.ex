@@ -7,17 +7,19 @@ defmodule OPQ.Feeder do
 
   alias OPQ.Queue
 
-  def start_link do
-    GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
+  def start_link(opts) do
+    GenStage.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def init(:ok) do
-    {:producer, :ok}
+  def init(opts) do
+    {:producer, opts}
   end
 
-  def handle_demand(demand, _queue) when demand > 0 do
-    {queue, new_queue} = Queue.split(demand)
+  def handle_demand(demand, opts) when demand > 0 do
+    {queue, new_queue} = Queue.split(demand, opts[:name])
 
-    {:noreply, :queue.to_list(queue), Queue.update_queue(new_queue)}
+    Queue.update_queue(new_queue, opts[:name])
+
+    {:noreply, :queue.to_list(queue), opts}
   end
 end

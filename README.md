@@ -17,9 +17,10 @@ OPQ.start(workers: 10)
 
 ## Configurations
 
-| Option       | Type    | Default Value | Description |
-|--------------|---------|---------------|-------------|
-| `:workers`   | integer | 10            | Maximum number of workers.
+| Option       | Type        | Default Value | Description |
+|--------------|-------------|---------------|-------------|
+| `:name`      | atom/module | OPQ.Queue.DB  | The name of the queue.
+| `:workers`   | integer     | 10            | Maximum number of workers.
 
 ## Features Backlog
 
