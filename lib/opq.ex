@@ -6,11 +6,15 @@ defmodule OPQ do
   alias OPQ.{Options, Queue, Feeder, WorkerSupervisor}
 
   def start(opts \\ []) do
-    import Supervisor.Spec
-
     opts = Options.assign_defaults(opts)
 
     Queue.init(opts[:name])
+
+    start_supervision(opts)
+  end
+
+  defp start_supervision(opts) do
+    import Supervisor.Spec
 
     children = [
       worker(Feeder, [opts]),
