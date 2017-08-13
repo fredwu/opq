@@ -11,7 +11,7 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 
 ## Usage
 
-### A simple example
+A simple example:
 
 ```elixir
 {:ok, pid} = OPQ.init
@@ -19,7 +19,7 @@ OPQ.enqueue(pid, fn -> IO.inspect("hello") end)
 OPQ.enqueue(pid, fn -> IO.inspect("world") end)
 ```
 
-### Specify a custom name for the queue
+Specify a custom name for the queue:
 
 ```elixir
 OPQ.init(name: :items)
@@ -27,7 +27,7 @@ OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
 OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
-### Specify a custom worker to process items in the queue
+Specify a custom worker to process items in the queue:
 
 ```elixir
 defmodule CustomWorker do
@@ -48,7 +48,7 @@ OPQ.enqueue(pid, "world")
 Agent.get(:bucket, & &1) # => ["world", "hello"]
 ```
 
-### Check the queue and number of available workers
+Check the queue and number of available workers:
 
 ```elixir
 {:ok, pid} = OPQ.init
