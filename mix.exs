@@ -4,7 +4,7 @@ defmodule OPQ.Mixfile do
   def project do
     [
       app:               :opq,
-      version:           "0.0.0",
+      version:           "0.1.0",
       elixir:            "~> 1.5",
       package:           package(),
       name:              "OPQ: One Pooled Queue",
