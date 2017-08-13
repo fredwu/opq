@@ -12,21 +12,34 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 ## Usage
 
 ```elixir
-OPQ.start(workers: 10)
+{:ok, pid} = OPQ.init
+OPQ.enqueue(pid, "hello")
+OPQ.enqueue(pid, "world")
+```
+
+```elixir
+OPQ.init(name: :items)
+OPQ.enqueue(:items, "hello")
+OPQ.enqueue(:items, "world")
+```
+
+```elixir
+OPQ.init(name: :functions, workers: 100)
+OPQ.enqueue(:functions, fn -> IO.inspect("hello") end)
+OPQ.enqueue(:functions, fn -> IO.inspect("world") end)
 ```
 
 ## Configurations
 
 | Option       | Type        | Default Value  | Description |
 |--------------|-------------|----------------|-------------|
-| `:name`      | atom/module | `OPQ.Queue.DB` | The name of the queue.
+| `:name`      | atom/module | pid            | The name of the queue.
 | `:workers`   | integer     | `10`           | Maximum number of workers.
 
 ## Features Backlog
 
 - [x] A simple FIFO queue.
 - [x] Worker pool via demand control.
-- [ ] Wait timeout on the queue so the program exits itself accordingly.
 - [ ] Rate limit.
 
 ## License

@@ -3,24 +3,27 @@ defmodule OPQ do
   A simple, in-memory queue with pooling in Elixir.
   """
 
-  alias OPQ.{Options, Queue, Feeder, WorkerSupervisor}
+  alias OPQ.{Options, Feeder, WorkerSupervisor}
 
-  def start(opts \\ []) do
-    opts = Options.assign_defaults(opts)
-
-    Queue.init(opts[:name])
-
-    start_supervision(opts)
+  def init(opts \\ []) do
+    opts
+    |> Options.assign_defaults
+    |> start_links
   end
 
-  defp start_supervision(opts) do
-    import Supervisor.Spec
+  def enqueue(feeder, event) do
+    GenStage.call(feeder, {:enqueue, event})
+  end
 
-    children = [
-      worker(Feeder, [opts]),
-      worker(WorkerSupervisor, [opts])
-    ]
+  def info(feeder) do
+    GenStage.call(feeder, :info)
+  end
 
-    Supervisor.start_link(children, strategy: :one_for_one, name: __MODULE__)
+  defp start_links(opts) do
+    {:ok, feeder} = Feeder.start_link(opts[:name])
+    opts          = Keyword.merge(opts, [name: feeder])
+    {:ok, _}      = WorkerSupervisor.start_link(opts)
+
+    {:ok, feeder}
   end
 end
