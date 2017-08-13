@@ -1,6 +1,6 @@
 defmodule OPQ do
   @moduledoc """
-  A simple, in-memory queue with pooling in Elixir.
+  A simple, in-memory queue with worker pooling and rate limiting in Elixir.
   """
 
   alias OPQ.{Options, Feeder, WorkerSupervisor}

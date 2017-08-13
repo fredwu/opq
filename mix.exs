@@ -8,7 +8,7 @@ defmodule OPQ.Mixfile do
       elixir:            "~> 1.5",
       package:           package(),
       name:              "OPQ: One Pooled Queue",
-      description:       "A simple, in-memory queue with pooling in Elixir.",
+      description:       "A simple, in-memory queue with worker pooling and rate limiting in Elixir.",
       start_permanent:   Mix.env == :prod,
       deps:              deps(),
       test_coverage:     [tool: ExCoveralls],
