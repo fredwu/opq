@@ -33,19 +33,19 @@ OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 defmodule CustomWorker do
   def start_link(item) do
     Task.start_link fn ->
-      Agent.update(CustomWorkerBucket, &[item | &1])
+      Agent.update(:bucket, &[item | &1])
     end
   end
 end
 
-Agent.start_link(fn -> [] end, name: CustomWorkerBucket)
+Agent.start_link(fn -> [] end, name: :bucket)
 
 {:ok, pid} = OPQ.init(worker: CustomWorker)
 
 OPQ.enqueue(pid, "hello")
 OPQ.enqueue(pid, "world")
 
-Agent.get(CustomWorkerBucket, & &1) # => ["world", "hello"]
+Agent.get(:bucket, & &1) # => ["world", "hello"]
 ```
 
 ### Check the queue and number of available workers
