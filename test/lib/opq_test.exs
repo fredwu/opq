@@ -45,6 +45,19 @@ defmodule OPQTest do
     end
   end
 
+  test "run out of demands from the workers" do
+    {:ok, pid} = OPQ.init(workers: 2)
+
+    OPQ.enqueue(pid, :a)
+    OPQ.enqueue(pid, :b)
+
+    wait fn ->
+      {queue, _demand} = OPQ.info(pid)
+
+      assert :queue.len(queue) == 0
+    end
+  end
+
   test "custom worker" do
     defmodule CustomWorker do
       def start_link(item) do
