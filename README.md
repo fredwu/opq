@@ -27,7 +27,7 @@ OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
 OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
-### Specify a custom worker to process the items in the queue
+### Specify a custom worker to process items in the queue
 
 ```elixir
 defmodule CustomWorker do
@@ -46,6 +46,19 @@ OPQ.enqueue(pid, "hello")
 OPQ.enqueue(pid, "world")
 
 Agent.get(CustomWorkerBucket, & &1) # => ["world", "hello"]
+```
+
+### Check the queue and number of available workers
+
+```elixir
+{:ok, pid} = OPQ.init
+OPQ.enqueue(pid, fn -> Process.sleep(3000) end)
+
+{queue, available_workers} = OPQ.info(pid) # => {{[], []}, 9}
+
+# after 3 seconds...
+
+{queue, available_workers} = OPQ.info(pid) # => {{[], []}, 10}
 ```
 
 ## Configurations
