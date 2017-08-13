@@ -28,7 +28,7 @@ defmodule OPQTest do
       {queue, _demand} = OPQ.info(pid)
 
       assert :queue.len(queue) == 0
-      assert Kernel.length(Agent.get(Bucket, & &1)) == 2
+      assert Agent.get(Bucket, & &1) == [:b, :a]
     end
   end
 
@@ -42,6 +42,27 @@ defmodule OPQTest do
       {queue, _demand} = OPQ.info(:items)
 
       assert :queue.len(queue) == 0
+    end
+  end
+
+  test "custom worker" do
+    defmodule CustomWorker do
+      def start_link(item) do
+        Task.start_link fn ->
+          Agent.update(CustomWorkerBucket, &[item | &1])
+        end
+      end
+    end
+
+    Agent.start_link(fn -> [] end, name: CustomWorkerBucket)
+
+    {:ok, pid} = OPQ.init(worker: CustomWorker)
+
+    OPQ.enqueue(pid, :a)
+    OPQ.enqueue(pid, :b)
+
+    wait fn ->
+      assert Agent.get(CustomWorkerBucket, & &1) == [:b, :a]
     end
   end
 end

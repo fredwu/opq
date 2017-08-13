@@ -3,6 +3,7 @@ defmodule OPQ.Options do
   Options for configuring OPQ.
   """
 
+  @worker  OPQ.Worker
   @workers 10
 
   @doc """
@@ -16,9 +17,11 @@ defmodule OPQ.Options do
   """
   def assign_defaults(opts) do
     Keyword.merge([
+      worker:  worker(),
       workers: workers(),
     ], opts)
   end
 
+  defp worker,  do: Application.get_env(:opq, :worker)  || @worker
   defp workers, do: Application.get_env(:opq, :workers) || @workers
 end

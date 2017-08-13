@@ -5,15 +5,13 @@ defmodule OPQ.WorkerSupervisor do
 
   use ConsumerSupervisor
 
-  alias OPQ.Worker
-
   def start_link(opts) do
     ConsumerSupervisor.start_link(__MODULE__, opts)
   end
 
   def init(opts) do
     children = [
-      worker(Worker, [], restart: :temporary)
+      worker(opts[:worker], [], restart: :temporary)
     ]
 
     {

@@ -1,12 +1,12 @@
 defmodule OPQ.Worker do
   @moduledoc """
-  A worker that runs a custom function.
+  A default worker that simply executes an item if it's a function.
   """
 
-  def start_link(event) do
-    Task.start_link(fn -> process_event(event) end)
+  def start_link(item) do
+    Task.start_link(fn -> process_item(item) end)
   end
 
-  defp process_event(event) when is_function(event), do: event.()
-  defp process_event(event),                         do: event
+  defp process_item(item) when is_function(item), do: item.()
+  defp process_item(item),                        do: item
 end

@@ -11,22 +11,41 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 
 ## Usage
 
+### A simple example
+
 ```elixir
 {:ok, pid} = OPQ.init
-OPQ.enqueue(pid, "hello")
-OPQ.enqueue(pid, "world")
+OPQ.enqueue(pid, fn -> IO.inspect("hello") end)
+OPQ.enqueue(pid, fn -> IO.inspect("world") end)
 ```
+
+### Specify a custom name for the queue
 
 ```elixir
 OPQ.init(name: :items)
-OPQ.enqueue(:items, "hello")
-OPQ.enqueue(:items, "world")
+OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
+OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
+### Specify a custom worker to process the items in the queue
+
 ```elixir
-OPQ.init(name: :functions, workers: 100)
-OPQ.enqueue(:functions, fn -> IO.inspect("hello") end)
-OPQ.enqueue(:functions, fn -> IO.inspect("world") end)
+defmodule CustomWorker do
+  def start_link(item) do
+    Task.start_link fn ->
+      Agent.update(CustomWorkerBucket, &[item | &1])
+    end
+  end
+end
+
+Agent.start_link(fn -> [] end, name: CustomWorkerBucket)
+
+{:ok, pid} = OPQ.init(worker: CustomWorker)
+
+OPQ.enqueue(pid, "hello")
+OPQ.enqueue(pid, "world")
+
+Agent.get(CustomWorkerBucket, & &1) # => ["world", "hello"]
 ```
 
 ## Configurations
@@ -34,6 +53,7 @@ OPQ.enqueue(:functions, fn -> IO.inspect("world") end)
 | Option       | Type        | Default Value  | Description |
 |--------------|-------------|----------------|-------------|
 | `:name`      | atom/module | pid            | The name of the queue.
+| `:worker`    | module      | `OPQ.Worker`   | The worker that processes each item from the queue.
 | `:workers`   | integer     | `10`           | Maximum number of workers.
 
 ## Features Backlog
