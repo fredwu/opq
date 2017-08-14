@@ -21,10 +21,6 @@ defmodule OPQ.RateLimiter do
     {:automatic, state}
   end
 
-  def handle_cancel(_, _from, _state) do
-    {:noreply, [], {}}
-  end
-
   def handle_events(events, _from, {pending, interval}) do
     {:noreply, events, {pending + length(events), interval}}
   end
@@ -40,6 +36,4 @@ defmodule OPQ.RateLimiter do
 
     {0, interval}
   end
-
-  defp ask_and_schedule(_from, state), do: state
 end
