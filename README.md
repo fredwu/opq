@@ -14,15 +14,16 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 - A fast, in-memory FIFO queue.
 - Worker pool.
 - Rate limit.
+- Timeouts.
 
 ## Usage
 
 A simple example:
 
 ```elixir
-{:ok, pid} = OPQ.init
-OPQ.enqueue(pid, fn -> IO.inspect("hello") end)
-OPQ.enqueue(pid, fn -> IO.inspect("world") end)
+{:ok, opq} = OPQ.init
+OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
+OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 ```
 
 Specify a custom name for the queue:
@@ -46,10 +47,10 @@ end
 
 Agent.start_link(fn -> [] end, name: :bucket)
 
-{:ok, pid} = OPQ.init(worker: CustomWorker)
+{:ok, opq} = OPQ.init(worker: CustomWorker)
 
-OPQ.enqueue(pid, "hello")
-OPQ.enqueue(pid, "world")
+OPQ.enqueue(opq, "hello")
+OPQ.enqueue(opq, "world")
 
 Agent.get(:bucket, & &1) # => ["world", "hello"]
 ```
@@ -57,25 +58,25 @@ Agent.get(:bucket, & &1) # => ["world", "hello"]
 Rate limit:
 
 ```elixir
-{:ok, pid} = OPQ.init(workers: 1, interval: 1000)
+{:ok, opq} = OPQ.init(workers: 1, interval: 1000)
 
 Task.async fn ->
-  OPQ.enqueue(pid, fn -> IO.inspect("hello") end)
-  OPQ.enqueue(pid, fn -> IO.inspect("world") end)
+  OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
+  OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 end
 ```
 
 Check the queue and number of available workers:
 
 ```elixir
-{:ok, pid} = OPQ.init
-OPQ.enqueue(pid, fn -> Process.sleep(1000) end)
+{:ok, opq} = OPQ.init
+OPQ.enqueue(opq, fn -> Process.sleep(1000) end)
 
-{queue, available_workers} = OPQ.info(pid) # => {{[], []}, 9}
+{queue, available_workers} = OPQ.info(opq) # => {{[], []}, 9}
 
 Process.sleep(1200)
 
-{queue, available_workers} = OPQ.info(pid) # => {{[], []}, 10}
+{queue, available_workers} = OPQ.info(opq) # => {{[], []}, 10}
 ```
 
 ## Configurations
@@ -86,6 +87,7 @@ Process.sleep(1200)
 | `:worker`    | module      | `OPQ.Worker`   | The worker that processes each item from the queue.
 | `:workers`   | integer     | `10`           | Maximum number of workers.
 | `:interval`  | integer     | `0`            | Rate limit control - number of milliseconds before asking for more items to process, defaults to `0` which is effectively no rate limit.
+| `:timeout`   | integer     | `5000`         | Number of milliseconds allowed to perform the work, it should always be set to higher than `:interval`.
 
 ## License
 

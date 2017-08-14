@@ -11,12 +11,12 @@ defmodule OPQ do
     |> start_links
   end
 
-  def enqueue(feeder, event) do
-    GenStage.call(feeder, {:enqueue, event})
+  def enqueue({feeder, opts}, event) do
+    GenStage.call(feeder, {:enqueue, event}, opts[:timeout])
   end
 
-  def info(feeder) do
-    GenStage.call(feeder, :info)
+  def info({feeder, opts}) do
+    GenStage.call(feeder, :info, opts[:timeout])
   end
 
   defp start_links(opts) do
@@ -26,6 +26,6 @@ defmodule OPQ do
     opts                = Keyword.merge(opts, [rate_limiter: rate_limiter])
     {:ok, _}            = WorkerSupervisor.start_link(opts)
 
-    {:ok, feeder}
+    {:ok, {feeder, opts}}
   end
 end

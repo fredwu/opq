@@ -6,6 +6,7 @@ defmodule OPQ.Options do
   @worker   OPQ.Worker
   @workers  10
   @interval 0
+  @timeout  5_000
 
   @doc """
   ## Examples
@@ -21,10 +22,12 @@ defmodule OPQ.Options do
       worker:   worker(),
       workers:  workers(),
       interval: interval(),
+      timeout:  timeout(),
     ], opts)
   end
 
   defp worker,   do: Application.get_env(:opq, :worker)   || @worker
   defp workers,  do: Application.get_env(:opq, :workers)  || @workers
   defp interval, do: Application.get_env(:opq, :interval) || @interval
+  defp timeout,  do: Application.get_env(:opq, :timeout)  || @timeout
 end

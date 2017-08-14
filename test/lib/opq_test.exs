@@ -4,13 +4,13 @@ defmodule OPQTest do
   doctest OPQ
 
   test "enqueue items" do
-    {:ok, pid} = OPQ.init
+    {:ok, opq} = OPQ.init
 
-    OPQ.enqueue(pid, :a)
-    OPQ.enqueue(pid, :b)
+    OPQ.enqueue(opq, :a)
+    OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(pid)
+      {queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
@@ -19,53 +19,53 @@ defmodule OPQTest do
   test "enqueue functions" do
     Agent.start_link(fn -> [] end, name: Bucket)
 
-    {:ok, pid} = OPQ.init
+    {:ok, opq} = OPQ.init
 
-    OPQ.enqueue(pid, fn -> Agent.update(Bucket, &[:a | &1]) end)
-    OPQ.enqueue(pid, fn -> Agent.update(Bucket, &[:b | &1]) end)
+    OPQ.enqueue(opq, fn -> Agent.update(Bucket, &[:a | &1]) end)
+    OPQ.enqueue(opq, fn -> Agent.update(Bucket, &[:b | &1]) end)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(pid)
+      {queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
-      assert Agent.get(Bucket, & &1) == [:b, :a]
+      assert Kernel.length(Agent.get(Bucket, & &1)) == 2
     end
   end
 
   test "enqueue to a named queue" do
-    OPQ.init(name: :items)
+    {:ok, {_opq, opts}} = OPQ.init(name: :items)
 
-    OPQ.enqueue(:items, :a)
-    OPQ.enqueue(:items, :b)
+    OPQ.enqueue({:items, opts}, :a)
+    OPQ.enqueue({:items, opts}, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(:items)
+      {queue, _demand} = OPQ.info({:items, opts})
 
       assert :queue.len(queue) == 0
     end
   end
 
   test "run out of demands from the workers" do
-    {:ok, pid} = OPQ.init(workers: 2)
+    {:ok, opq} = OPQ.init(workers: 2)
 
-    OPQ.enqueue(pid, :a)
-    OPQ.enqueue(pid, :b)
+    OPQ.enqueue(opq, :a)
+    OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(pid)
+      {queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
   end
 
   test "single worker" do
-    {:ok, pid} = OPQ.init(workers: 1)
+    {:ok, opq} = OPQ.init(workers: 1)
 
-    OPQ.enqueue(pid, :a)
-    OPQ.enqueue(pid, :b)
+    OPQ.enqueue(opq, :a)
+    OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(pid)
+      {queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
@@ -82,32 +82,48 @@ defmodule OPQTest do
 
     Agent.start_link(fn -> [] end, name: CustomWorkerBucket)
 
-    {:ok, pid} = OPQ.init(worker: CustomWorker)
+    {:ok, opq} = OPQ.init(worker: CustomWorker)
 
-    OPQ.enqueue(pid, :a)
-    OPQ.enqueue(pid, :b)
+    OPQ.enqueue(opq, :a)
+    OPQ.enqueue(opq, :b)
 
     wait fn ->
-      assert Agent.get(CustomWorkerBucket, & &1) == [:b, :a]
+      assert Kernel.length(Agent.get(CustomWorkerBucket, & &1)) == 2
     end
   end
 
   test "rate limit" do
     Agent.start_link(fn -> [] end, name: RateLimitBucket)
 
-    {:ok, pid} = OPQ.init(workers: 1, interval: 10)
+    {:ok, opq} = OPQ.init(workers: 1, interval: 10)
 
     Task.async fn ->
-      OPQ.enqueue(pid, fn -> Agent.update(RateLimitBucket, &[:a | &1]) end)
-      OPQ.enqueue(pid, fn -> Agent.update(RateLimitBucket, &[:b | &1]) end)
+      OPQ.enqueue(opq, fn -> Agent.update(RateLimitBucket, &[:a | &1]) end)
+      OPQ.enqueue(opq, fn -> Agent.update(RateLimitBucket, &[:b | &1]) end)
     end
 
     Process.sleep(5)
 
-    assert Agent.get(RateLimitBucket, & &1) == [:a]
+    assert Kernel.length(Agent.get(RateLimitBucket, & &1)) == 1
 
     wait fn ->
-      assert Agent.get(RateLimitBucket, & &1) == [:b, :a]
+      assert Kernel.length(Agent.get(RateLimitBucket, & &1)) == 2
     end
+  end
+
+  test "timeout" do
+    {:ok, opq} = OPQ.init(workers: 1, interval: 10, timeout: 5)
+
+    OPQ.enqueue(opq, :a)
+
+    timeout = try do
+      OPQ.enqueue(opq, :b)
+    catch
+      :exit, _ -> true
+    else
+      _ -> false
+    end
+
+    assert timeout
   end
 end
