@@ -22,6 +22,7 @@ A simple example:
 
 ```elixir
 {:ok, opq} = OPQ.init
+
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 ```
@@ -30,6 +31,7 @@ Specify a custom name for the queue:
 
 ```elixir
 {:ok, {pid, opts}} = OPQ.init(name: :items)
+
 OPQ.enqueue({:items, opts}, fn -> IO.inspect("hello") end)
 OPQ.enqueue({:items, opts}, fn -> IO.inspect("world") end)
 ```
@@ -70,6 +72,7 @@ Check the queue and number of available workers:
 
 ```elixir
 {:ok, opq} = OPQ.init
+
 OPQ.enqueue(opq, fn -> Process.sleep(1000) end)
 
 {queue, available_workers} = OPQ.info(opq) # => {{[], []}, 9}
