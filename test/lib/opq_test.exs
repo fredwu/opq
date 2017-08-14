@@ -91,4 +91,23 @@ defmodule OPQTest do
       assert Agent.get(CustomWorkerBucket, & &1) == [:b, :a]
     end
   end
+
+  test "rate limit" do
+    Agent.start_link(fn -> [] end, name: RateLimitBucket)
+
+    {:ok, pid} = OPQ.init(workers: 1, interval: 10)
+
+    Task.async fn ->
+      OPQ.enqueue(pid, fn -> Agent.update(RateLimitBucket, &[:a | &1]) end)
+      OPQ.enqueue(pid, fn -> Agent.update(RateLimitBucket, &[:b | &1]) end)
+    end
+
+    Process.sleep(5)
+
+    assert Agent.get(RateLimitBucket, & &1) == [:a]
+
+    wait fn ->
+      assert Agent.get(RateLimitBucket, & &1) == [:b, :a]
+    end
+  end
 end

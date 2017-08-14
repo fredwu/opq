@@ -19,7 +19,7 @@ defmodule OPQ.WorkerSupervisor do
       children,
       strategy: :one_for_one,
       subscribe_to: [
-        {opts[:name], min_demand: 0, max_demand: opts[:workers]}
+        {opts[:rate_limiter], min_demand: 0, max_demand: opts[:workers]}
       ]
     }
   end

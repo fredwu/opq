@@ -9,6 +9,12 @@ A simple, in-memory queue with worker pooling and rate limiting in Elixir. OPQ l
 
 Originally built to support [Crawler](https://github.com/fredwu/crawler).
 
+## Features
+
+- A fast, in-memory FIFO queue.
+- Worker pool.
+- Rate limit.
+
 ## Usage
 
 A simple example:
@@ -48,15 +54,26 @@ OPQ.enqueue(pid, "world")
 Agent.get(:bucket, & &1) # => ["world", "hello"]
 ```
 
+Rate limit:
+
+```elixir
+{:ok, pid} = OPQ.init(workers: 1, interval: 1000)
+
+Task.async fn ->
+  OPQ.enqueue(pid, fn -> IO.inspect("hello") end)
+  OPQ.enqueue(pid, fn -> IO.inspect("world") end)
+end
+```
+
 Check the queue and number of available workers:
 
 ```elixir
 {:ok, pid} = OPQ.init
-OPQ.enqueue(pid, fn -> Process.sleep(3000) end)
+OPQ.enqueue(pid, fn -> Process.sleep(1000) end)
 
 {queue, available_workers} = OPQ.info(pid) # => {{[], []}, 9}
 
-# after 3 seconds...
+Process.sleep(1200)
 
 {queue, available_workers} = OPQ.info(pid) # => {{[], []}, 10}
 ```
@@ -68,12 +85,7 @@ OPQ.enqueue(pid, fn -> Process.sleep(3000) end)
 | `:name`      | atom/module | pid            | The name of the queue.
 | `:worker`    | module      | `OPQ.Worker`   | The worker that processes each item from the queue.
 | `:workers`   | integer     | `10`           | Maximum number of workers.
-
-## Features Backlog
-
-- [x] A simple FIFO queue.
-- [x] Worker pool via demand control.
-- [ ] Rate limit.
+| `:interval`  | integer     | `0`            | Rate limit control - number of milliseconds before asking for more items to process, defaults to `0` which is effectively no rate limit.
 
 ## License
 
