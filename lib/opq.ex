@@ -19,6 +19,11 @@ defmodule OPQ do
     GenStage.call(feeder, :info, opts[:timeout])
   end
 
+  def stop({feeder, opts}) do
+    Process.flag(:trap_exit, true)
+    GenStage.call(feeder, :stop, opts[:timeout])
+  end
+
   defp start_links(opts) do
     {:ok, feeder}       = Feeder.start_link(opts[:name])
     opts                = Keyword.merge(opts, [name: feeder])

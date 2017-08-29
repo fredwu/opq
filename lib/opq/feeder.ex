@@ -16,6 +16,10 @@ defmodule OPQ.Feeder do
     {:reply, state, [], state}
   end
 
+  def handle_call(:stop, _from, state) do
+    {:stop, :shutdown, {:shutdown, state}, state}
+  end
+
   def handle_call({:enqueue, event}, from, {queue, pending_demand}) do
     queue = :queue.in({from, event}, queue)
     dispatch_events(queue, pending_demand, [])

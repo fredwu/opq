@@ -82,6 +82,16 @@ Process.sleep(1200)
 {queue, available_workers} = OPQ.info(opq) # => {{[], []}, 10}
 ```
 
+Stop the queue:
+
+```elixir
+{:ok, opq} = OPQ.init
+
+OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
+OPQ.stop(opq)
+OPQ.enqueue(opq, fn -> IO.inspect("world") end) # => (EXIT) no process...
+```
+
 ## Configurations
 
 | Option       | Type        | Default Value  | Description |

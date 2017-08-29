@@ -126,4 +126,13 @@ defmodule OPQTest do
 
     assert timeout
   end
+
+  test "stop" do
+    {:ok, opq} = OPQ.init(workers: 1)
+
+    OPQ.enqueue(opq, :a)
+    OPQ.stop(opq)
+
+    assert catch_exit(OPQ.enqueue(opq, :b))
+  end
 end
