@@ -4,7 +4,7 @@ defmodule OPQ.Mixfile do
   def project do
     [
       app:               :opq,
-      version:           "1.0.1",
+      version:           "2.0.0",
       elixir:            "~> 1.5",
       package:           package(),
       name:              "OPQ: One Pooled Queue",
@@ -13,7 +13,7 @@ defmodule OPQ.Mixfile do
       deps:              deps(),
       test_coverage:     [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test],
-      aliases:           ["publish": ["hex.publish", &git_tag/1]],
+      aliases:           [publish: ["hex.publish", &git_tag/1]],
     ]
   end
 
