@@ -15,6 +15,7 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 - Worker pool.
 - Rate limit.
 - Timeouts.
+- Pause / resume / stop the queue.
 
 ## Usage
 
@@ -75,11 +76,11 @@ Check the queue and number of available workers:
 
 OPQ.enqueue(opq, fn -> Process.sleep(1000) end)
 
-{queue, available_workers} = OPQ.info(opq) # => {{[], []}, 9}
+{queue, available_workers} = OPQ.info(opq) # => {:normal, {[], []}, 9}
 
 Process.sleep(1200)
 
-{queue, available_workers} = OPQ.info(opq) # => {{[], []}, 10}
+{queue, available_workers} = OPQ.info(opq) # => {:normal, {[], []}, 10}
 ```
 
 Stop the queue:
@@ -90,6 +91,19 @@ Stop the queue:
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.stop(opq)
 OPQ.enqueue(opq, fn -> IO.inspect("world") end) # => (EXIT) no process...
+```
+
+Pause and resume the queue:
+
+```elixir
+{:ok, opq} = OPQ.init
+
+OPQ.enqueue(opq, fn -> IO.inspect("hello") end) # => "hello"
+OPQ.pause(opq)
+OPQ.info(opq) # => {:paused, {[], []}, 10}
+OPQ.enqueue(opq, fn -> IO.inspect("world") end)
+OPQ.resume(opq) # => "world"
+OPQ.info(opq) # => {:normal, {[], []}, 10}
 ```
 
 ## Configurations

@@ -15,14 +15,14 @@ defmodule OPQ do
     GenStage.call(feeder, {:enqueue, event}, opts[:timeout])
   end
 
-  def info({feeder, opts}) do
-    GenStage.call(feeder, :info, opts[:timeout])
-  end
-
   def stop({feeder, opts}) do
     Process.flag(:trap_exit, true)
     GenStage.call(feeder, :stop, opts[:timeout])
   end
+
+  def pause({feeder, opts}),  do: GenStage.call(feeder, :pause, opts[:timeout])
+  def resume({feeder, opts}), do: GenStage.call(feeder, :resume, opts[:timeout])
+  def info({feeder, opts}),   do: GenStage.call(feeder, :info, opts[:timeout])
 
   defp start_links(opts) do
     {:ok, feeder}       = Feeder.start_link(opts[:name])

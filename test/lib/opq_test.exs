@@ -10,7 +10,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(opq)
+      {_status, queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
@@ -25,7 +25,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, fn -> Agent.update(Bucket, &[:b | &1]) end)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(opq)
+      {_status, queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
       assert Kernel.length(Agent.get(Bucket, & &1)) == 2
@@ -39,7 +39,7 @@ defmodule OPQTest do
     OPQ.enqueue({:items, opts}, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info({:items, opts})
+      {_status, queue, _demand} = OPQ.info({:items, opts})
 
       assert :queue.len(queue) == 0
     end
@@ -52,7 +52,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(opq)
+      {_status, queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
@@ -65,7 +65,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait fn ->
-      {queue, _demand} = OPQ.info(opq)
+      {_status, queue, _demand} = OPQ.info(opq)
 
       assert :queue.len(queue) == 0
     end
@@ -131,8 +131,39 @@ defmodule OPQTest do
     {:ok, opq} = OPQ.init(workers: 1)
 
     OPQ.enqueue(opq, :a)
+
     OPQ.stop(opq)
 
     assert catch_exit(OPQ.enqueue(opq, :b))
+  end
+
+  test "pause & resume" do
+    Agent.start_link(fn -> [] end, name: PauseBucket)
+
+    {:ok, opq} = OPQ.init(workers: 1)
+
+    OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:a | &1]) end)
+
+    OPQ.pause(opq)
+    Process.sleep(10)
+
+    OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:b | &1]) end)
+    OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:c | &1]) end)
+
+    wait fn ->
+      {status, _queue, _demand} = OPQ.info(opq)
+
+      assert status == :paused
+      assert Kernel.length(Agent.get(PauseBucket, & &1)) == 1
+    end
+
+    OPQ.resume(opq)
+
+    wait fn ->
+      {status, _queue, _demand} = OPQ.info(opq)
+
+      assert status == :normal
+      assert Kernel.length(Agent.get(PauseBucket, & &1)) == 3
+    end
   end
 end
