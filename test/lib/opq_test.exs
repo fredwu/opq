@@ -145,7 +145,6 @@ defmodule OPQTest do
     OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:a | &1]) end)
 
     OPQ.pause(opq)
-    Process.sleep(10)
 
     OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:b | &1]) end)
     OPQ.enqueue(opq, fn -> Agent.update(PauseBucket, &[:c | &1]) end)

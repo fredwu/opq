@@ -17,7 +17,7 @@ defmodule OPQ.Feeder do
   end
 
   def handle_call(:pause, _from, {_status, queue, demand}) do
-    {:reply, :ok, [], {:paused, queue, demand}}
+    dispatch_or_pause(:paused, queue, demand)
   end
 
   def handle_call(:resume, from, {_status, queue, demand}) do
@@ -45,6 +45,10 @@ defmodule OPQ.Feeder do
 
   def handle_demand(demand, {status, queue, pending_demand}) do
     dispatch_events(status, queue, demand + pending_demand, [])
+  end
+
+  defp dispatch_events(:paused, queue, demand, events) do
+    {:noreply, Enum.reverse(events), {:paused, queue, demand}}
   end
 
   defp dispatch_events(status, queue, 0, events) do
