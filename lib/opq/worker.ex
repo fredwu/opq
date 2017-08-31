@@ -7,6 +7,7 @@ defmodule OPQ.Worker do
     Task.start_link(fn -> process_item(item) end)
   end
 
+  defp process_item({m, f, a}),                   do: apply(m, f, a)
   defp process_item(item) when is_function(item), do: item.()
   defp process_item(item),                        do: item
 end
