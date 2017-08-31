@@ -28,6 +28,15 @@ OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 ```
 
+Specify module, function and arguments:
+
+```elixir
+{:ok, opq} = OPQ.init
+
+OPQ.enqueue(opq, IO, :inspect, ["hello"])
+OPQ.enqueue(opq, IO, :inspect, ["world"])
+```
+
 Specify a custom name for the queue:
 
 ```elixir

@@ -15,11 +15,13 @@ defmodule OPQ do
   def enqueue(feeder, event) do
     GenStage.call(feeder, {:enqueue, event}, Opt.timeout(feeder))
   end
-  def enqueue({feeder, opts}, mod, func, args)
+
+  def enqueue(feeder, mod, fun, args)
     when is_atom(mod)
-    when is_atom(func)
-    when is_list(args) do
-    enqueue({feeder, opts}, {mod, func, args})
+    and is_atom(fun)
+    and is_list(args)
+  do
+    enqueue(feeder, {mod, fun, args})
   end
 
   def stop(feeder) do
