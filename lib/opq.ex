@@ -4,6 +4,7 @@ defmodule OPQ do
   """
 
   alias OPQ.{Options, Feeder, RateLimiter, WorkerSupervisor}
+  alias OPQ.OptionsHandler, as: Opt
 
   def init(opts \\ []) do
     opts
@@ -11,26 +12,29 @@ defmodule OPQ do
     |> start_links
   end
 
-  def enqueue({feeder, opts}, event) do
-    GenStage.call(feeder, {:enqueue, event}, opts[:timeout])
+  def enqueue(feeder, event) do
+    GenStage.call(feeder, {:enqueue, event}, Opt.timeout(feeder))
   end
 
-  def stop({feeder, opts}) do
+  def stop(feeder) do
     Process.flag(:trap_exit, true)
-    GenStage.call(feeder, :stop, opts[:timeout])
+    GenStage.call(feeder, :stop, Opt.timeout(feeder))
   end
 
-  def pause({feeder, opts}),  do: GenStage.call(feeder, :pause, opts[:timeout])
-  def resume({feeder, opts}), do: GenStage.call(feeder, :resume, opts[:timeout])
-  def info({feeder, opts}),   do: GenStage.call(feeder, :info, opts[:timeout])
+  def pause(feeder),  do: GenStage.call(feeder, :pause, Opt.timeout(feeder))
+  def resume(feeder), do: GenStage.call(feeder, :resume, Opt.timeout(feeder))
+  def info(feeder),   do: GenStage.call(feeder, :info, Opt.timeout(feeder))
 
   defp start_links(opts) do
     {:ok, feeder}       = Feeder.start_link(opts[:name])
+
+    Opt.save_opts(opts[:name] || feeder, opts)
+
     opts                = Keyword.merge(opts, [name: feeder])
     {:ok, rate_limiter} = RateLimiter.start_link(opts)
     opts                = Keyword.merge(opts, [rate_limiter: rate_limiter])
     {:ok, _}            = WorkerSupervisor.start_link(opts)
 
-    {:ok, {feeder, opts}}
+    {:ok, feeder}
   end
 end

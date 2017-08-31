@@ -31,10 +31,10 @@ OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 Specify a custom name for the queue:
 
 ```elixir
-{:ok, {_pid, opts}} = OPQ.init(name: :items)
+OPQ.init(name: :items)
 
-OPQ.enqueue({:items, opts}, fn -> IO.inspect("hello") end)
-OPQ.enqueue({:items, opts}, fn -> IO.inspect("world") end)
+OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
+OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
 Specify a custom worker to process items in the queue:

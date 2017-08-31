@@ -33,13 +33,13 @@ defmodule OPQTest do
   end
 
   test "enqueue to a named queue" do
-    {:ok, {_opq, opts}} = OPQ.init(name: :items)
+    OPQ.init(name: :items)
 
-    OPQ.enqueue({:items, opts}, :a)
-    OPQ.enqueue({:items, opts}, :b)
+    OPQ.enqueue(:items, :a)
+    OPQ.enqueue(:items, :b)
 
     wait fn ->
-      {_status, queue, _demand} = OPQ.info({:items, opts})
+      {_status, queue, _demand} = OPQ.info(:items)
 
       assert :queue.len(queue) == 0
     end
