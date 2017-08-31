@@ -32,6 +32,21 @@ defmodule OPQTest do
     end
   end
 
+  test "enqueue mfa" do
+    Agent.start_link(fn -> [] end, name: Bucket)
+
+    {:ok, opq} = OPQ.init
+    OPQ.enqueue(opq, Agent, :update, [Bucket, &[:a | &1]])
+    OPQ.enqueue(opq, Agent, :update, [Bucket, &[:b | &1]])
+
+    wait fn ->
+      {_status, queue, _demand} = OPQ.info(opq)
+
+      assert :queue.len(queue) == 0
+      assert Kernel.length(Agent.get(Bucket, & &1)) == 2
+    end
+  end
+
   test "enqueue to a named queue" do
     OPQ.init(name: :items)
 
