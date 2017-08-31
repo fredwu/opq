@@ -125,6 +125,10 @@ OPQ.info(opq) # => {:normal, {[], []}, 10}
 | `:interval`  | integer     | `0`            | Rate limit control - number of milliseconds before asking for more items to process, defaults to `0` which is effectively no rate limit.
 | `:timeout`   | integer     | `5000`         | Number of milliseconds allowed to perform the work, it should always be set to higher than `:interval`.
 
+## Changelog
+
+Please see [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 Licensed under [MIT](http://fredwu.mit-license.org/).
