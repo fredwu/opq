@@ -15,6 +15,12 @@ defmodule OPQ do
   def enqueue(feeder, event) do
     GenStage.call(feeder, {:enqueue, event}, Opt.timeout(feeder))
   end
+  def enqueue({feeder, opts}, mod, func, args)
+    when is_atom(mod)
+    when is_atom(func)
+    when is_list(args) do
+    enqueue({feeder, opts}, {mod, func, args})
+  end
 
   def stop(feeder) do
     Process.flag(:trap_exit, true)
