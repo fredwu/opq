@@ -17,10 +17,9 @@ defmodule OPQ do
   end
 
   def enqueue(feeder, mod, fun, args)
-    when is_atom(mod)
-    and is_atom(fun)
-    and is_list(args)
-  do
+      when is_atom(mod) and
+           is_atom(fun) and
+           is_list(args) do
     enqueue(feeder, {mod, fun, args})
   end
 
