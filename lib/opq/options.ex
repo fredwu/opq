@@ -26,8 +26,8 @@ defmodule OPQ.Options do
     ], opts)
   end
 
-  defp worker,   do: Application.get_env(:opq, :worker)   || @worker
-  defp workers,  do: Application.get_env(:opq, :workers)  || @workers
-  defp interval, do: Application.get_env(:opq, :interval) || @interval
-  defp timeout,  do: Application.get_env(:opq, :timeout)  || @timeout
+  defp worker(),   do: Application.get_env(:opq, :worker,   @worker)
+  defp workers(),  do: Application.get_env(:opq, :workers,  @workers)
+  defp interval(), do: Application.get_env(:opq, :interval, @interval)
+  defp timeout(),  do: Application.get_env(:opq, :timeout,  @timeout)
 end

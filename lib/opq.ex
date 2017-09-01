@@ -8,8 +8,8 @@ defmodule OPQ do
 
   def init(opts \\ []) do
     opts
-    |> Options.assign_defaults
-    |> start_links
+    |> Options.assign_defaults()
+    |> start_links()
   end
 
   def enqueue(feeder, event) do
