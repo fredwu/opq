@@ -153,6 +153,7 @@ defmodule OPQTest do
     assert catch_exit(OPQ.enqueue(opq, :b))
 
     agent = :"opq-#{Kernel.inspect(opq)}"
+
     assert catch_exit(Agent.get(agent, & &1))
   end
 

@@ -4,6 +4,11 @@
 
 - [Improved] Varies small fixes and improvements
 
+## v3.0.1 [2017-09-02]
+
+- [Fixed] Agent should be stopped too when `OPQ.stop/1` is called
+- [Improved] Varies small fixes and improvements
+
 ## v3.0.0 [2017-08-31]
 
 - [Added] Added support for enqueueing MFAs
