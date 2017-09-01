@@ -26,6 +26,7 @@ defmodule OPQ do
   def stop(feeder) do
     Process.flag(:trap_exit, true)
     GenStage.call(feeder, :stop, Opt.timeout(feeder))
+    Opt.stop(feeder)
   end
 
   def pause(feeder),  do: GenStage.call(feeder, :pause, Opt.timeout(feeder))
