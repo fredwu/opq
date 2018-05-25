@@ -13,7 +13,7 @@ defmodule OPQ do
   end
 
   def enqueue(feeder, event) do
-    GenStage.call(feeder, {:enqueue, event}, Opt.timeout(feeder))
+    GenStage.cast(feeder, {:enqueue, event})
   end
 
   def enqueue(feeder, mod, fun, args)
@@ -25,12 +25,12 @@ defmodule OPQ do
 
   def stop(feeder) do
     Process.flag(:trap_exit, true)
-    GenStage.call(feeder, :stop, Opt.timeout(feeder))
+    GenStage.cast(feeder, :stop)
     Opt.stop(feeder)
   end
 
-  def pause(feeder),  do: GenStage.call(feeder, :pause, Opt.timeout(feeder))
-  def resume(feeder), do: GenStage.call(feeder, :resume, Opt.timeout(feeder))
+  def pause(feeder),  do: GenStage.cast(feeder, :pause)
+  def resume(feeder), do: GenStage.cast(feeder, :resume)
   def info(feeder),   do: GenStage.call(feeder, :info, Opt.timeout(feeder))
 
   defp start_links(opts) do

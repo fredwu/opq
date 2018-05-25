@@ -127,22 +127,6 @@ defmodule OPQTest do
     end
   end
 
-  test "timeout" do
-    {:ok, opq} = OPQ.init(workers: 1, interval: 10, timeout: 5)
-
-    OPQ.enqueue(opq, :a)
-
-    timeout = try do
-      OPQ.enqueue(opq, :b)
-    catch
-      :exit, _ -> true
-    else
-      _ -> false
-    end
-
-    assert timeout
-  end
-
   test "stop" do
     {:ok, opq} = OPQ.init(workers: 1)
 
@@ -150,7 +134,7 @@ defmodule OPQTest do
 
     OPQ.stop(opq)
 
-    assert catch_exit(OPQ.enqueue(opq, :b))
+    refute Process.alive?(opq)
 
     agent = :"opq-#{Kernel.inspect(opq)}"
 

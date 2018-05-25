@@ -12,16 +12,15 @@ defmodule OPQ.Feeder do
     {:producer, {:normal, :queue.new, 0}}
   end
 
-  def handle_call(:stop, _from, state) do
-    {:stop, :shutdown, state, state}
+  def handle_cast(:stop, state) do
+    {:stop, :shutdown, state}
   end
 
-  def handle_call(:pause, _from, {_status, queue, demand}) do
+  def handle_cast(:pause, {_status, queue, demand}) do
     dispatch_or_pause(:paused, queue, demand)
   end
 
-  def handle_call(:resume, from, {_status, queue, demand}) do
-    GenStage.reply(from, :ok)
+  def handle_cast(:resume, {_status, queue, demand}) do
     dispatch_events(:normal, queue, demand, [])
   end
 
@@ -29,8 +28,8 @@ defmodule OPQ.Feeder do
     {:reply, state, [], state}
   end
 
-  def handle_call({:enqueue, event}, from, {status, queue, pending_demand}) do
-    queue = :queue.in({from, event}, queue)
+  def handle_cast({:enqueue, event}, {status, queue, pending_demand}) do
+    queue = :queue.in(event, queue)
 
     dispatch_or_pause(status, queue, pending_demand)
   end
@@ -40,7 +39,7 @@ defmodule OPQ.Feeder do
   end
 
   defp dispatch_or_pause(:paused, queue, demand) do
-    {:reply, :ok, [], {:paused, queue, demand}}
+    {:noreply, [], {:paused, queue, demand}}
   end
 
   def handle_demand(demand, {status, queue, pending_demand}) do
@@ -57,8 +56,7 @@ defmodule OPQ.Feeder do
 
   defp dispatch_events(status, queue, demand, events) do
     case :queue.out(queue) do
-      {{:value, {from, event}}, queue} ->
-        GenStage.reply(from, :ok)
+      {{:value, event}, queue} ->
         dispatch_events(status, queue, demand - 1, [event | events])
       {:empty, queue} ->
         {:noreply, Enum.reverse(events), {status, queue, demand}}
