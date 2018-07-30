@@ -6,6 +6,7 @@ defmodule OPQ.Mixfile do
       app:               :opq,
       version:           "3.1.0",
       elixir:            "~> 1.5",
+      elixirc_paths:     elixirc_paths(Mix.env),
       package:           package(),
       name:              "OPQ: One Pooled Queue",
       description:       "A simple, in-memory queue with worker pooling and rate limiting in Elixir.",
@@ -22,6 +23,9 @@ defmodule OPQ.Mixfile do
       extra_applications: [:logger],
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   defp deps do
     [
