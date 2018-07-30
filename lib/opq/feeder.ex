@@ -24,14 +24,14 @@ defmodule OPQ.Feeder do
     dispatch_events(:normal, queue, demand, [])
   end
 
-  def handle_call(:info, _from, state) do
-    {:reply, state, [], state}
-  end
-
   def handle_cast({:enqueue, event}, {status, queue, pending_demand}) do
     queue = :queue.in(event, queue)
 
     dispatch_or_pause(status, queue, pending_demand)
+  end
+
+  def handle_call(:info, _from, state) do
+    {:reply, state, [], state}
   end
 
   defp dispatch_or_pause(:normal, queue, demand) do
