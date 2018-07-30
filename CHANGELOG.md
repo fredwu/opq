@@ -2,7 +2,10 @@
 
 ## master
 
+## v3.1.0 [2018-07-30]
+
 - [Improved] Varies small fixes and improvements
+- [Improved] Use `cast` instead of `call` to avoid timeouts
 
 ## v3.0.1 [2017-09-02]
 
