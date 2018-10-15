@@ -29,7 +29,7 @@ defmodule OPQ.Mixfile do
 
   defp deps do
     [
-      {:gen_stage,   "~> 0.12"},
+      {:gen_stage,   "~> 0.14.1"},
       {:ex_doc,      ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.7",   only: :test},
     ]

@@ -20,7 +20,7 @@ defmodule OPQ.WorkerSupervisor do
       strategy: :one_for_one,
       subscribe_to: [
         {
-          opts[:rate_limiter],
+          opts[:producer_consumer],
           min_demand: 0, max_demand: opts[:workers], timeout: opts[:timeout]
         }
       ]
