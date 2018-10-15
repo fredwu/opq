@@ -4,7 +4,7 @@ defmodule OPQ.Mixfile do
   def project do
     [
       app:               :opq,
-      version:           "3.1.0",
+      version:           "3.1.1",
       elixir:            "~> 1.5",
       elixirc_paths:     elixirc_paths(Mix.env),
       package:           package(),
