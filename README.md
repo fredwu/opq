@@ -78,6 +78,8 @@ Task.async fn ->
 end
 ```
 
+If no interval is supplied, the ratelimiter will be bypassed.
+
 Check the queue and number of available workers:
 
 ```elixir
