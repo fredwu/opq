@@ -40,22 +40,21 @@ defmodule OPQ do
 
     opts
     |> Keyword.merge([name: feeder])
-    |> start_consumers()
+    |> start_consumers(interval: opts[:interval])
 
     {:ok, feeder}
   end
 
-  defp start_consumers(opts) do
-    case opts[:interval] do
-      0 ->
-        opts
-        |> Keyword.merge([producer_consumer: opts[:name]])
-        |> WorkerSupervisor.start_link()
-      _ ->
-        {:ok, rate_limiter} = RateLimiter.start_link(opts)
-        opts
-        |> Keyword.merge([producer_consumer: rate_limiter])
-        |> WorkerSupervisor.start_link()
-    end
+  defp start_consumers(opts, interval: 0) do
+    opts
+    |> Keyword.merge([producer_consumer: opts[:name]])
+    |> WorkerSupervisor.start_link()
+  end
+
+  defp start_consumers(opts, _) do
+    {:ok, rate_limiter} = RateLimiter.start_link(opts)
+    opts
+    |> Keyword.merge([producer_consumer: rate_limiter])
+    |> WorkerSupervisor.start_link()
   end
 end
