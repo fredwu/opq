@@ -4,7 +4,7 @@ defmodule OPQ.Mixfile do
   def project do
     [
       app:               :opq,
-      version:           "3.1.2",
+      version:           "3.2.0",
       elixir:            "~> 1.5",
       elixirc_paths:     elixirc_paths(Mix.env),
       package:           package(),
@@ -29,9 +29,9 @@ defmodule OPQ.Mixfile do
 
   defp deps do
     [
-      {:gen_stage,   "~> 1.0.0"},
+      {:gen_stage,   "~> 1.1"},
       {:ex_doc,      ">= 0.0.0", only: :dev},
-      {:excoveralls, "~> 0.7",   only: :test},
+      {:excoveralls, "~> 0.14",  only: :test},
     ]
   end
 

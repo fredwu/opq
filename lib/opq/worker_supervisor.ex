@@ -11,19 +11,20 @@ defmodule OPQ.WorkerSupervisor do
 
   def init(opts) do
     children = [
-      worker(opts[:worker], [], restart: :temporary)
+      %{id: opts[:worker], start: {opts[:worker], :start_link, []}, restart: :temporary}
     ]
 
-    {
-      :ok,
-      children,
-      strategy: :one_for_one,
-      subscribe_to: [
-        {
-          opts[:producer_consumer],
-          min_demand: 0, max_demand: opts[:workers], timeout: opts[:timeout]
-        }
+    cs_opts =
+      [
+        strategy: :one_for_one,
+        subscribe_to: [
+          {
+            opts[:producer_consumer],
+            min_demand: 0, max_demand: opts[:workers], timeout: opts[:timeout]
+          }
+        ]
       ]
-    }
+
+    ConsumerSupervisor.init(children, cs_opts)
   end
 end

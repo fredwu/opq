@@ -2,6 +2,9 @@
 
 ## master
 
+- [Improved] Updated to the new `ConsumerSupervisor` syntax
+- [Improved] Updated all the dependencies
+
 ## v3.1.1 [2018-10-15]
 
 - [Fixed] Infinite loop without rate limiting (thanks @Harrisonl)
