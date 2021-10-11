@@ -18,6 +18,14 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 - Timeouts.
 - Pause / resume / stop the queue.
 
+## Installation
+
+```Elixir
+def deps do
+  [{:opq, "~> 3.2"}]
+end
+```
+
 ## Usage
 
 A simple example:
