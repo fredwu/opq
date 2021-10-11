@@ -2,6 +2,8 @@
 
 ## master
 
+## v3.2.0 [2021-10-11]
+
 - [Improved] Updated to the new `ConsumerSupervisor` syntax
 - [Improved] Updated all the dependencies
 
