@@ -28,25 +28,25 @@ end
 
 ## Usage
 
-A simple example:
+### A simple example:
 
 ```elixir
-{:ok, opq} = OPQ.init
+{:ok, opq} = OPQ.init()
 
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.enqueue(opq, fn -> IO.inspect("world") end)
 ```
 
-Specify module, function and arguments:
+### Specify module, function and arguments:
 
 ```elixir
-{:ok, opq} = OPQ.init
+{:ok, opq} = OPQ.init()
 
 OPQ.enqueue(opq, IO, :inspect, ["hello"])
 OPQ.enqueue(opq, IO, :inspect, ["world"])
 ```
 
-Specify a custom name for the queue:
+### Specify a custom name for the queue:
 
 ```elixir
 OPQ.init(name: :items)
@@ -55,14 +55,24 @@ OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
 OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
-Specify a custom worker to process items in the queue:
+### Start as part of a supervision tree:
+
+Note, when starting as part of a supervision tree, the `:name` option must be provided.
+
+```elixir
+children = [
+  {OPQ, name: :items}
+]
+```
+
+### Specify a custom worker to process items in the queue:
 
 ```elixir
 defmodule CustomWorker do
   def start_link(item) do
-    Task.start_link fn ->
+    Task.start_link(fn ->
       Agent.update(:bucket, &[item | &1])
-    end
+    end)
   end
 end
 
@@ -76,23 +86,23 @@ OPQ.enqueue(opq, "world")
 Agent.get(:bucket, & &1) # => ["world", "hello"]
 ```
 
-Rate limit:
+### Rate limit:
 
 ```elixir
 {:ok, opq} = OPQ.init(workers: 1, interval: 1000)
 
-Task.async fn ->
+Task.async(fn ->
   OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
   OPQ.enqueue(opq, fn -> IO.inspect("world") end)
-end
+end)
 ```
 
 If no interval is supplied, the ratelimiter will be bypassed.
 
-Check the queue and number of available workers:
+### Check the queue and number of available workers:
 
 ```elixir
-{:ok, opq} = OPQ.init
+{:ok, opq} = OPQ.init()
 
 OPQ.enqueue(opq, fn -> Process.sleep(1000) end)
 
@@ -103,20 +113,20 @@ Process.sleep(1200)
 {queue, available_workers} = OPQ.info(opq) # => {:normal, {[], []}, 10}
 ```
 
-Stop the queue:
+### Stop the queue:
 
 ```elixir
-{:ok, opq} = OPQ.init
+{:ok, opq} = OPQ.init()
 
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.stop(opq)
 OPQ.enqueue(opq, fn -> IO.inspect("world") end) # => (EXIT) no process...
 ```
 
-Pause and resume the queue:
+### Pause and resume the queue:
 
 ```elixir
-{:ok, opq} = OPQ.init
+{:ok, opq} = OPQ.init()
 
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end) # => "hello"
 OPQ.pause(opq)

@@ -2,6 +2,10 @@
 
 ## master
 
+## v3.3.0 [2021-10-12]
+
+- [Added] The ability to start as part of a supervision tree
+
 ## v3.2.0 [2021-10-11]
 
 - [Improved] Updated to the new `ConsumerSupervisor` syntax

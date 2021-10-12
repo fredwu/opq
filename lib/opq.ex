@@ -6,6 +6,15 @@ defmodule OPQ do
   alias OPQ.{Options, Feeder, RateLimiter, WorkerSupervisor}
   alias OPQ.OptionsHandler, as: Opt
 
+  def child_spec(opts \\ []) do
+    %{
+      id: opts[:name],
+      start: {OPQ, :start_link, [opts]}
+    }
+  end
+
+  def start_link(opts \\ []), do: init(opts)
+
   def init(opts \\ []) do
     opts
     |> Options.assign_defaults()

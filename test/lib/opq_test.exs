@@ -3,7 +3,33 @@ defmodule OPQTest do
 
   doctest OPQ
 
-  test "enqueue items" do
+  test "enqueue items - child_spec/1" do
+    Supervisor.start_link([{OPQ, name: :opq}], strategy: :one_for_one)
+
+    OPQ.enqueue(:opq, :a)
+    OPQ.enqueue(:opq, :b)
+
+    wait(fn ->
+      {_status, queue, _demand} = OPQ.info(:opq)
+
+      assert :queue.len(queue) == 0
+    end)
+  end
+
+  test "enqueue items - start_link/1" do
+    {:ok, opq} = OPQ.start_link()
+
+    OPQ.enqueue(opq, :a)
+    OPQ.enqueue(opq, :b)
+
+    wait(fn ->
+      {_status, queue, _demand} = OPQ.info(opq)
+
+      assert :queue.len(queue) == 0
+    end)
+  end
+
+  test "enqueue items - init/1" do
     {:ok, opq} = OPQ.init()
 
     OPQ.enqueue(opq, :a)
