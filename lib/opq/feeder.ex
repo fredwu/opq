@@ -5,11 +5,11 @@ defmodule OPQ.Feeder do
 
   use GenStage
 
-  def start_link(nil),  do: GenStage.start_link(__MODULE__, :ok)
+  def start_link(nil), do: GenStage.start_link(__MODULE__, :ok)
   def start_link(name), do: GenStage.start_link(__MODULE__, :ok, name: name)
 
   def init(:ok) do
-    {:producer, {:normal, :queue.new, 0}}
+    {:producer, {:normal, :queue.new(), 0}}
   end
 
   def handle_cast(:stop, state) do
@@ -58,6 +58,7 @@ defmodule OPQ.Feeder do
     case :queue.out(queue) do
       {{:value, event}, queue} ->
         dispatch_events(status, queue, demand - 1, [event | events])
+
       {:empty, queue} ->
         {:noreply, Enum.reverse(events), {status, queue, demand}}
     end

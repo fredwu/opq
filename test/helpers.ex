@@ -2,6 +2,7 @@
 defmodule Helpers do
   def wait(fun), do: wait(500, fun)
   def wait(0, fun), do: fun.()
+
   def wait(timeout, fun) do
     try do
       fun.()

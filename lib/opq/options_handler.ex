@@ -12,5 +12,5 @@ defmodule OPQ.OptionsHandler do
   def stop(feeder), do: Agent.stop(name(feeder))
 
   defp load_opts(feeder), do: Agent.get(name(feeder), & &1)
-  defp name(feeder),      do: :"opq-#{Kernel.inspect(feeder)}"
+  defp name(feeder), do: :"opq-#{Kernel.inspect(feeder)}"
 end
