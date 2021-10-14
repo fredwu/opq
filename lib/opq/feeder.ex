@@ -24,7 +24,7 @@ defmodule OPQ.Feeder do
     dispatch_events(:normal, queue, demand, [])
   end
 
-  def handle_cast({:enqueue, event}, {status, %OPQ.Queue{data: data} = queue, pending_demand}) do
+  def handle_cast({:enqueue, event}, {status, %OPQ.Queue{data: data}, pending_demand}) do
     data = :queue.in(event, data)
 
     dispatch_or_pause(status, %OPQ.Queue{data: data}, pending_demand)
