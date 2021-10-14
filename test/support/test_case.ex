@@ -3,7 +3,7 @@ defmodule OPQ.TestCase do
 
   using do
     quote do
-      import Helpers
+      import OPQ.TestHelpers
     end
   end
 end
