@@ -7,7 +7,7 @@
 [![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/opq/)
 [![Total Download](https://img.shields.io/hexpm/dt/opq.svg)](https://hex.pm/packages/opq)
 [![License](https://img.shields.io/hexpm/l/opq.svg)](https://github.com/fredwu/opq/blob/master/LICENSE.md)
-[![Last Updated](https://img.shields.io/github/last-commit/fredwu/opq.svg)](https://github.com/fredwu/crawler/commits/master)
+[![Last Updated](https://img.shields.io/github/last-commit/fredwu/opq.svg)](https://github.com/fredwu/opq/commits/master)
 
 ## Elixir Queue!
 
