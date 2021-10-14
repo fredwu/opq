@@ -29,7 +29,7 @@ See [Hex documentation](https://hexdocs.pm/opq/).
 
 ```Elixir
 def deps do
-  [{:opq, "~> 3.2"}]
+  [{:opq, "~> 4.0"}]
 end
 ```
 
