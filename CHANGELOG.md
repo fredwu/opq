@@ -2,7 +2,11 @@
 
 ## master
 
-## v4.0.0
+## v4.0.1 [2021-10-14]
+
+- [Fixed] Wrong link to the project
+
+## v4.0.0 [2021-10-14]
 
 - [Added] `OPQ.Queue` wraps `:queue` and implements `Enumerable`
 
