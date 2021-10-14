@@ -2,6 +2,8 @@
 
 ## master
 
+## v4.0.0
+
 - [Added] `OPQ.Queue` wraps `:queue` and implements `Enumerable`
 
 ## v3.3.0 [2021-10-12]

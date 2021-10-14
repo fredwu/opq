@@ -2,7 +2,7 @@ defmodule OPQ.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/fredwu/crawler"
-  @version "3.3.0"
+  @version "4.0.0"
 
   def project do
     [
