@@ -1,10 +1,13 @@
 defmodule OPQ.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/fredwu/crawler"
+  @version "3.3.0"
+
   def project do
     [
       app: :opq,
-      version: "3.3.0",
+      version: @version,
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
@@ -12,6 +15,7 @@ defmodule OPQ.Mixfile do
       description: "A simple, in-memory queue with worker pooling and rate limiting in Elixir.",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      docs: docs(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [coveralls: :test],
       aliases: [publish: ["hex.publish", &git_tag/1]]
@@ -39,7 +43,7 @@ defmodule OPQ.Mixfile do
     [
       maintainers: ["Fred Wu"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/fredwu/opq"}
+      links: %{"GitHub" => @source_url}
     ]
   end
 
@@ -47,5 +51,15 @@ defmodule OPQ.Mixfile do
     System.cmd("git", ["tag", "v" <> Mix.Project.config()[:version]])
     System.cmd("git", ["push"])
     System.cmd("git", ["push", "--tags"])
+  end
+
+  defp docs do
+    [
+      extras: ["CHANGELOG.md": [title: "Changelog"], "README.md": [title: "Overview"]],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: "v#{@version}",
+      formatters: ["html"]
+    ]
   end
 end

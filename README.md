@@ -2,7 +2,12 @@
 
 [![Build Status](https://github.com/fredwu/opq/actions/workflows/ci.yml/badge.svg)](https://github.com/fredwu/opq/actions)
 [![CodeBeat](https://codebeat.co/badges/76916047-5b66-466d-91d3-7131a269899a)](https://codebeat.co/projects/github-com-fredwu-opq-master)
-[![Coverage](https://img.shields.io/coveralls/fredwu/opq.svg)](https://coveralls.io/github/fredwu/opq?branch=master) [![Hex.pm](https://img.shields.io/hexpm/v/opq.svg)](https://hex.pm/packages/opq)
+[![Coverage](https://img.shields.io/coveralls/fredwu/opq.svg)](https://coveralls.io/github/fredwu/opq?branch=master)
+[![Hex Version](https://img.shields.io/hexpm/v/opq.svg)](https://hex.pm/packages/opq)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/opq/)
+[![Total Download](https://img.shields.io/hexpm/dt/opq.svg)](https://hex.pm/packages/opq)
+[![License](https://img.shields.io/hexpm/l/opq.svg)](https://github.com/fredwu/opq/blob/master/LICENSE.md)
+[![Last Updated](https://img.shields.io/github/last-commit/fredwu/opq.svg)](https://github.com/fredwu/crawler/commits/master)
 
 ## Elixir Queue!
 
@@ -17,6 +22,8 @@ Originally built to support [Crawler](https://github.com/fredwu/crawler).
 - Rate limit.
 - Timeouts.
 - Pause / resume / stop the queue.
+
+See [Hex documentation](https://hexdocs.pm/opq/).
 
 ## Installation
 
