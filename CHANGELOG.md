@@ -2,6 +2,8 @@
 
 ## master
 
+- [Added] `OPQ.Queue` wraps `:queue` and implements `Enumerable`
+
 ## v3.3.0 [2021-10-12]
 
 - [Added] The ability to start as part of a supervision tree

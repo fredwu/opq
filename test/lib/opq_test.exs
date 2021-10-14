@@ -10,9 +10,7 @@ defmodule OPQTest do
     OPQ.enqueue(:opq, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(:opq)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(:opq)
     end)
   end
 
@@ -23,9 +21,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(opq)
     end)
   end
 
@@ -36,9 +32,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(opq)
     end)
   end
 
@@ -51,9 +45,8 @@ defmodule OPQTest do
     OPQ.enqueue(opq, fn -> Agent.update(Bucket, &[:b | &1]) end)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
+      assert_empty_queue(opq)
 
-      assert :queue.len(queue) == 0
       assert Kernel.length(Agent.get(Bucket, & &1)) == 2
     end)
   end
@@ -67,9 +60,8 @@ defmodule OPQTest do
     OPQ.enqueue(opq, Agent, :update, [MfaBucket, &[:b | &1]])
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
+      assert_empty_queue(opq)
 
-      assert :queue.len(queue) == 0
       assert Kernel.length(Agent.get(MfaBucket, & &1)) == 2
     end)
   end
@@ -81,9 +73,7 @@ defmodule OPQTest do
     OPQ.enqueue(:items, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(:items)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(:items)
     end)
   end
 
@@ -94,9 +84,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(opq)
     end)
   end
 
@@ -107,9 +95,7 @@ defmodule OPQTest do
     OPQ.enqueue(opq, :b)
 
     wait(fn ->
-      {_status, queue, _demand} = OPQ.info(opq)
-
-      assert :queue.len(queue) == 0
+      assert_empty_queue(opq)
     end)
   end
 
@@ -194,5 +180,11 @@ defmodule OPQTest do
       assert status == :normal
       assert Kernel.length(Agent.get(PauseBucket, & &1)) == 3
     end)
+  end
+
+  defp assert_empty_queue(queue_name) do
+    assert queue_name
+           |> OPQ.queue()
+           |> Enum.empty?()
   end
 end

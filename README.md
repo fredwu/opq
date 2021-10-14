@@ -113,11 +113,30 @@ If no interval is supplied, the ratelimiter will be bypassed.
 
 OPQ.enqueue(opq, fn -> Process.sleep(1000) end)
 
-{queue, available_workers} = OPQ.info(opq) # => {:normal, {[], []}, 9}
+{status, queue, available_workers} = OPQ.info(opq) # => {:normal, #OPQ.Queue<[]>, 9}
 
 Process.sleep(1200)
 
-{queue, available_workers} = OPQ.info(opq) # => {:normal, {[], []}, 10}
+{status, queue, available_workers} = OPQ.info(opq) # => {:normal, #OPQ.Queue<[]>, 10}
+```
+
+If you just need to get the queue itself:
+
+```elixir
+OPQ.queue(opq) # => #OPQ.Queue<[]>
+```
+
+### Queue
+
+OPQ implements `Enumerable`, so you can perform enumerable functions on the queue:
+
+```elixir
+{:ok, opq} = OPQ.init()
+
+queue = OPQ.queue(opq)
+
+Enum.count(queue) # => 0
+Enum.empty?(queue) # => true
 ```
 
 ### Stop the queue:

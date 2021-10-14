@@ -41,6 +41,7 @@ defmodule OPQ do
   def pause(feeder), do: GenStage.cast(feeder, :pause)
   def resume(feeder), do: GenStage.cast(feeder, :resume)
   def info(feeder), do: GenStage.call(feeder, :info, Opt.timeout(feeder))
+  def queue(feeder), do: GenStage.call(feeder, :queue, Opt.timeout(feeder))
 
   defp start_links(opts) do
     {:ok, feeder} = Feeder.start_link(opts[:name])
