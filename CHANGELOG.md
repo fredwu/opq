@@ -2,6 +2,10 @@
 
 ## master
 
+## v4.0.2 [2023-06-13]
+
+- [Improved] Updated all the dependencies
+
 ## v4.0.1 [2021-10-14]
 
 - [Fixed] Wrong link to the project
