@@ -3,6 +3,8 @@ defmodule OPQTest do
 
   doctest OPQ
 
+  @moduletag capture_log: true
+
   test "enqueue items - child_spec/1" do
     Supervisor.start_link([{OPQ, name: :opq}], strategy: :one_for_one)
 
@@ -179,6 +181,29 @@ defmodule OPQTest do
 
       assert status == :normal
       assert Kernel.length(Agent.get(PauseBucket, & &1)) == 3
+    end)
+  end
+
+  test "graceful handle of exit signals" do
+    Process.flag(:trap_exit, true)
+
+    Agent.start_link(fn -> [] end, name: ExitBucket)
+
+    {:ok, opq} = OPQ.init(workers: 1)
+
+    OPQ.enqueue(opq, fn ->
+      Process.sleep(10)
+      Agent.update(ExitBucket, &[:a | &1])
+    end)
+
+    Process.sleep(1)
+
+    Process.exit(opq, :SIGTERM)
+
+    refute Process.alive?(opq)
+
+    wait(fn ->
+      assert Kernel.length(Agent.get(ExitBucket, & &1)) == 1
     end)
   end
 

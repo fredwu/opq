@@ -4,7 +4,10 @@ defmodule OPQ.Worker do
   """
 
   def start_link(item) do
-    Task.start_link(fn -> process_item(item) end)
+    Task.start_link(fn ->
+      Process.flag(:trap_exit, true)
+      process_item(item)
+    end)
   end
 
   defp process_item({mod, fun, args}), do: apply(mod, fun, args)
