@@ -2,6 +2,9 @@
 
 ## master
 
+- [Improved] Updated all the dependencies
+- [Improved] Varies small fixes and improvements
+
 ## v4.0.3 [2023-07-02]
 
 - [Added] Graceful handling of exit signals in the default worker
