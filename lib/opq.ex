@@ -5,8 +5,11 @@ defmodule OPQ do
 
   use GenServer
 
-  alias OPQ.{Options, Feeder, RateLimiter, WorkerSupervisor}
+  alias OPQ.Feeder
+  alias OPQ.Options
   alias OPQ.OptionsHandler, as: Opt
+  alias OPQ.RateLimiter
+  alias OPQ.WorkerSupervisor
 
   def start_link(opts \\ []), do: init(opts)
 

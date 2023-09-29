@@ -34,6 +34,7 @@ defmodule OPQ.Mixfile do
   defp deps do
     [
       {:gen_stage, "~> 1.1"},
+      {:recode, "~> 0.6", only: :dev},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:excoveralls, "~> 0.14", only: :test}
     ]
