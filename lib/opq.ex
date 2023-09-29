@@ -3,15 +3,10 @@ defmodule OPQ do
   A simple, in-memory queue with worker pooling and rate limiting in Elixir.
   """
 
+  use GenServer
+
   alias OPQ.{Options, Feeder, RateLimiter, WorkerSupervisor}
   alias OPQ.OptionsHandler, as: Opt
-
-  def child_spec(opts \\ []) do
-    %{
-      id: opts[:name],
-      start: {OPQ, :start_link, [opts]}
-    }
-  end
 
   def start_link(opts \\ []), do: init(opts)
 
