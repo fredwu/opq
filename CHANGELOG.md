@@ -2,6 +2,8 @@
 
 ## master
 
+## v4.0.4 [2023-09-29]
+
 - [Improved] Updated all the dependencies
 - [Improved] Varies small fixes and improvements
 

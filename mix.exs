@@ -2,13 +2,13 @@ defmodule OPQ.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/fredwu/opq"
-  @version "4.0.3"
+  @version "4.0.4"
 
   def project do
     [
       app: :opq,
       version: @version,
-      elixir: "~> 1.5",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       name: "OPQ: One Pooled Queue",
