@@ -2,6 +2,10 @@
 
 ## master
 
+- [Fixed] Queue options use feeder PID identity instead of permanent dynamic atoms
+- [Fixed] Named queues accept both name and PID handles for options lookup
+- [Fixed] Options share the feeder lifetime, and stop preserves caller exit trapping
+
 ## v4.0.4 [2023-09-29]
 
 - [Improved] Updated all the dependencies

@@ -5,15 +5,14 @@ defmodule OPQ.Feeder do
 
   use GenStage
 
-  def start_link(nil), do: GenStage.start_link(__MODULE__, :ok)
-  def start_link(name), do: GenStage.start_link(__MODULE__, :ok, name: name)
-
-  def init(:ok) do
-    {:producer, {:normal, %OPQ.Queue{}, 0}}
+  def start_link(opts) do
+    name = if is_nil(opts[:name]), do: [], else: [name: opts[:name]]
+    GenStage.start_link(__MODULE__, opts, name)
   end
 
-  def handle_cast(:stop, state) do
-    {:stop, :shutdown, state}
+  def init(opts) do
+    {:ok, _owner} = OPQ.OptionsHandler.register(opts)
+    {:producer, {:normal, %OPQ.Queue{}, 0}}
   end
 
   def handle_cast(:pause, {_status, queue, demand}) do

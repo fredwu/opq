@@ -31,20 +31,22 @@ defmodule OPQ do
   end
 
   def stop(feeder) do
-    Process.flag(:trap_exit, true)
-    GenStage.cast(feeder, :stop)
-    Opt.stop(feeder)
+    {pid, timeout} = Opt.lookup(feeder)
+    GenStage.stop(pid, :normal, timeout)
   end
 
   def pause(feeder), do: GenStage.cast(feeder, :pause)
   def resume(feeder), do: GenStage.cast(feeder, :resume)
-  def info(feeder), do: GenStage.call(feeder, :info, Opt.timeout(feeder))
-  def queue(feeder), do: GenStage.call(feeder, :queue, Opt.timeout(feeder))
+  def info(feeder), do: call(feeder, :info)
+  def queue(feeder), do: call(feeder, :queue)
+
+  defp call(feeder, request) do
+    {pid, timeout} = Opt.lookup(feeder)
+    GenStage.call(pid, request, timeout)
+  end
 
   defp start_links(opts) do
-    {:ok, feeder} = Feeder.start_link(opts[:name])
-
-    Opt.save_opts(opts[:name] || feeder, opts)
+    {:ok, feeder} = Feeder.start_link(opts)
 
     opts
     |> Keyword.merge(name: feeder)

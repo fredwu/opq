@@ -143,6 +143,7 @@ defmodule OPQTest do
 
   test "stop" do
     {:ok, opq} = OPQ.init(workers: 1)
+    flags = Process.info(self(), :trap_exit)
 
     OPQ.enqueue(opq, :a)
 
@@ -150,9 +151,8 @@ defmodule OPQTest do
 
     refute Process.alive?(opq)
 
-    agent = :"opq-#{Kernel.inspect(opq)}"
-
-    assert catch_exit(Agent.get(agent, & &1))
+    assert Process.info(self(), :trap_exit) == flags
+    assert catch_exit(OPQ.info(opq))
   end
 
   test "pause & resume" do

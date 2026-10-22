@@ -24,6 +24,7 @@ defmodule OPQ.Mixfile do
 
   def application do
     [
+      mod: {OPQ.Application, []},
       extra_applications: [:logger]
     ]
   end

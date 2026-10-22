@@ -62,6 +62,16 @@ OPQ.enqueue(:items, fn -> IO.inspect("hello") end)
 OPQ.enqueue(:items, fn -> IO.inspect("world") end)
 ```
 
+The returned feeder PID and its registered name address the same queue. Both
+handles work with `info/1`, `queue/1`, `pause/1`, `resume/1`, and `stop/1`.
+Queue options are registered by feeder PID without creating atoms per queue.
+The OPQ application starts the shared Registry. If that Registry fails, its
+registered feeders stop; their options do not survive as stale entries.
+Registry partition failures recover under supervision. If the Registry supervisor
+itself is killed, its children can still be shutting down when restart is
+attempted; the OPQ application can then stop at its restart limit. Restart the
+OPQ application before starting fresh queues in that case.
+
 ### Start as part of a supervision tree:
 
 Note, when starting as part of a supervision tree, the `:name` option must be provided.
@@ -146,8 +156,13 @@ Enum.empty?(queue) # => true
 
 OPQ.enqueue(opq, fn -> IO.inspect("hello") end)
 OPQ.stop(opq)
-OPQ.enqueue(opq, fn -> IO.inspect("world") end) # => (EXIT) no process...
+OPQ.info(opq) # => (EXIT) no process...
 ```
+
+`stop/1` waits for the feeder to stop and does not change the caller's exit
+trapping. Queue options are removed when the feeder exits, including an
+unexpected exit. Calls to `info/1`, `queue/1`, or `stop/1` for a stopped queue
+exit with `:noproc`. Enqueue, pause, and resume remain asynchronous casts.
 
 ### Pause and resume the queue:
 
